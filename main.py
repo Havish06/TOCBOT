@@ -61,16 +61,11 @@ class PerplexityClient:
             payload = {
                 "model": self.model,
                 "messages": [
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are a friendly, chill AI who talks like a real person. "
-                            "No citations, no sources, no '[1][2]' stuff. Keep it casual, short, "
-                            "and fun—use normal human tone like chatting with a friend."
-                        )
-                    }
+                    {"role": "system",
+                     "content": "You are a chill, friendly AI. Keep it short and natural. No citations."}
                 ] + msgs,
-                "temperature": 1.0,
+                "temperature": 0.9,
+                "disable_search": True,
                 "return_related_sources": False,
                 "search_domain_filter": ["chat"],
             }
@@ -330,10 +325,11 @@ def create_web_app(api_key=None):
     return app
 
 
+app = create_web_app(os.getenv("PERPLEXITY_API_KEY"))
+
 if __name__ == "__main__":
-    api_key = os.getenv("PERPLEXITY_API_KEY")
-    app = create_web_app(api_key)
-    print("🚀 Running Hybrid Chatbot → http://localhost:5000")
-    if not api_key:
-        print("⚠️ PERPLEXITY_API_KEY not set (daily conversation disabled).")
+    print("Running Hybrid Chatbot → http://localhost:5000")
+    if not os.getenv("PERPLEXITY_API_KEY"):
+        print("PERPLEXITY_API_KEY not set (daily conversation disabled).")
     app.run(debug=True, host="0.0.0.0", port=5000)
+
